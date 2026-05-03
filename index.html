@@ -1,49 +1,24 @@
 <!DOCTYPE html>
-<html lang="bn" translate="no">
+<html lang="bn">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="google" content="notranslate">
 <title>Service Site</title>
 
 <style>
 body{margin:0;font-family:Arial;background:#f5f5f5}
 
-/* TOP LOADING */
-#topLoading{
-display:none;position:fixed;top:0;left:0;width:100%;
-background:black;color:white;text-align:center;
-padding:10px;z-index:9999;font-weight:bold;
-}
-
-/* marquee */
-.marquee{background:#fff;border:1px solid #000;overflow:hidden}
-.marquee p{color:red;padding:10px;white-space:nowrap;animation:scroll 15s linear infinite}
-@keyframes scroll{from{transform:translateX(100%)}to{transform:translateX(-100%)}}
-
-/* images */
+/* MAIN */
+.marquee{background:#fff;padding:10px;color:red;white-space:nowrap;overflow:hidden}
 .image-box{display:flex;gap:10px;padding:10px}
-.image-box img{width:50%;aspect-ratio:4/6;border-radius:10px}
+.image-box img{width:50%;border-radius:10px}
 
-/* service */
-.section-title{padding:10px;border-bottom:3px solid red;margin:10px}
-.service-box{background:pink;border:1px solid black;margin:10px;padding:10px;border-radius:10px}
-
-/* messenger */
-.messenger-box{display:none;background:#fff;margin:10px;padding:10px;border-radius:10px}
-.input-area{display:none;margin-top:10px}
-
-input{width:100%;padding:10px;font-size:16px}
-
-/* buttons */
+/* BUTTON */
 .buy-btn{
-display:block;width:90%;margin:20px auto;padding:15px;
-background:#ff0066;color:white;border:none;border-radius:30px;
-font-size:18px;
+width:90%;margin:20px auto;display:block;
+padding:15px;background:#ff0066;color:#fff;
+border:none;border-radius:30px;font-size:18px;
 }
-
-/* payment */
-#paymentPage{display:none;padding:15px}
 
 /* CALL UI */
 #callUI{
@@ -51,15 +26,15 @@ display:none;
 position:fixed;
 top:0;left:0;
 width:100%;height:100%;
-background:rgba(0,0,0,0.85);
+background:rgba(0,0,0,0.9);
 color:white;
 z-index:99999;
-flex-direction:column;
 justify-content:center;
 align-items:center;
+flex-direction:column;
+text-align:center;
 }
 
-/* VIDEO */
 #videoCall{
 display:none;
 position:fixed;
@@ -75,31 +50,26 @@ height:100%;
 object-fit:cover;
 }
 
-/* controls */
 #controls{
 display:none;
 position:fixed;
 bottom:20px;
 left:50%;
 transform:translateX(-50%);
-background:rgba(0,0,0,0.7);
-padding:10px 15px;
-border-radius:30px;
 z-index:1000000;
+background:rgba(0,0,0,0.6);
+padding:10px;
+border-radius:20px;
 color:white;
-gap:15px;
+gap:10px;
 }
 </style>
 </head>
 
 <body>
 
-<div id="topLoading">Please Wait...</div>
-
-<div id="mainPage">
-
 <div class="marquee">
-<p>আমার নাম সুরভী 😚 আমি ভিডিও কলে সার্ভিস দিয়ে থাকি 😘</p>
+আমার নাম সুরভী 😚 আমি ভিডিও কলে সার্ভিস দেই 😘
 </div>
 
 <div class="image-box">
@@ -107,40 +77,17 @@ gap:15px;
 <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhCZKnYgE_idUV7fwznkXuY3XRfTR2BMrNulZl4Aofom_1BFBGQJy39wI5mZk_x5Z3n5xfJzz8OlH7lVx9E0ko300MHmmPTR2tdyB9qkLFg9jT9YLZiGpQZNxUBqdqJ0zRqkYT_gk8JxMHQEE2NnEeVj7neeErT5V_RwM1QeXPqNuw5VGvuxa80mxTdHdGe/s640/WhatsApp%20Image.jpeg">
 </div>
 
-<div class="section-title">কতক্ষণ সার্ভিস নিবেন:</div>
+<button class="buy-btn" onclick="startService()">Start Service</button>
 
-<div class="service-box">
-<div onclick="selectService(150,0)">৩ মিনিট - ১৫০ টাকা <input type="radio" name="service"></div>
-<div onclick="selectService(250,1)">৫ মিনিট - ২৫০ টাকা <input type="radio" name="service"></div>
-<div onclick="selectService(400,2)">১০ মিনিট - ৪০০ টাকা <input type="radio" name="service"></div>
-</div>
-
-<div class="messenger-box" id="messengerBox">
-<div class="section-title">মেসেঞ্জার বাছাই করুন:</div>
-
-<div onclick="selectMessenger('WhatsApp',0)">WhatsApp</div>
-<div onclick="selectMessenger('Telegram',1)">Telegram</div>
-<div onclick="selectMessenger('Imo',2)">Imo</div>
-
-<div class="input-area" id="inputArea">
-<p id="inputLabel"></p>
-<input type="text" id="userInput">
-</div>
-</div>
-
-<button class="buy-btn" onclick="buyService()">সার্ভিস কিনুন</button>
-
-</div>
-
-<!-- 📞 CALL UI -->
+<!-- 📞 CALL SCREEN -->
 <div id="callUI">
-<img src="https://i.ibb.co/0jqHpnp/profile.png" style="width:90px;height:90px;border-radius:50%">
-<h2>Surovi (Demo Call)</h2>
+<img src="https://i.ibb.co/0jqHpnp/profile.png" style="width:100px;height:100px;border-radius:50%">
+<h2>Surovi (Incoming Call)</h2>
 <p>Incoming Video Call...</p>
 
 <div style="margin-top:20px;">
-<button onclick="acceptCall()" style="padding:10px 20px;background:green;color:white;border:none;">Accept</button>
-<button onclick="declineCall()" style="padding:10px 20px;background:red;color:white;border:none;">Decline</button>
+<button onclick="acceptCall()" style="padding:10px 20px;background:green;color:#fff;border:none;">Accept</button>
+<button onclick="declineCall()" style="padding:10px 20px;background:red;color:#fff;border:none;">Decline</button>
 </div>
 </div>
 
@@ -151,62 +98,50 @@ gap:15px;
 </video>
 </div>
 
+<!-- 🎛️ CONTROLS -->
+<div id="controls">
+<button onclick="toggleMute()">🔇</button>
+<button onclick="endCall()">❌</button>
+</div>
+
 <!-- 🔊 RINGTONE -->
 <audio id="ringtone" loop>
 <source src="https://files.catbox.moe/8u5x9r.mp3">
 </audio>
-
-<!-- 🎛️ CONTROLS -->
-<div id="controls">
-<button onclick="toggleMute()">🔇</button>
-<input type="range" min="0" max="1" step="0.1" onchange="setVol(this.value)">
-<button onclick="endCall()">❌</button>
-</div>
 
 <script>
 
 let ringtone=document.getElementById("ringtone");
 let video=document.querySelector("#videoCall video");
 
-/* SERVICE */
-let selectedAmount=0;
-let messenger="";
-
-function selectService(a,i){
-document.getElementsByName("service")[i].checked=true;
-selectedAmount=a;
-document.getElementById("messengerBox").style.display="block";
-}
-
-function selectMessenger(m,i){
-messenger=m;
-document.getElementById("inputArea").style.display="block";
-}
-
-/* BUY */
-function buyService(){
+/* ✅ FIXED AUTO CALL */
+function startService(){
 setTimeout(showCall,15000);
-alert("Order placed (Demo)");
+alert("Service Started (Demo)");
 }
 
-/* CALL */
 function showCall(){
 document.getElementById("callUI").style.display="flex";
-ringtone.play();
-if(navigator.vibrate){navigator.vibrate([500,300,500]);}
+ringtone.play().catch(()=>{});
+
+if(navigator.vibrate){
+navigator.vibrate([500,300,500]);
+}
 }
 
 function declineCall(){
-ringtone.pause();
 document.getElementById("callUI").style.display="none";
+ringtone.pause();
+
+/* repeat call */
 setTimeout(showCall,5000);
 }
 
 function acceptCall(){
-ringtone.pause();
 document.getElementById("callUI").style.display="none";
 document.getElementById("videoCall").style.display="block";
 document.getElementById("controls").style.display="flex";
+ringtone.pause();
 }
 
 function endCall(){
@@ -216,10 +151,6 @@ document.getElementById("controls").style.display="none";
 
 function toggleMute(){
 video.muted=!video.muted;
-}
-
-function setVol(v){
-video.volume=v;
 }
 
 </script>

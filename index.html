@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Survi Service</title>
+<title>Survi Video Service</title>
 
 <style>
 body{
@@ -13,48 +13,52 @@ background:#f5f5f5;
 text-align:center;
 }
 
-/* profile */
-.profile-img{
+/* PROFILE */
+.profile{
+margin-top:20px;
+}
+
+.profile img{
 width:120px;
 height:120px;
 border-radius:50%;
+border:3px solid red;
 object-fit:cover;
-margin-top:20px;
-border:3px solid #ff4d4d;
 }
 
 h1{margin:10px 0;}
 
-.img-row{
+/* IMAGES */
+.row{
 display:flex;
 justify-content:center;
 gap:10px;
 margin-top:10px;
 }
 
-.img-row img{
+.row img{
 width:45%;
 border-radius:10px;
 }
 
+/* DESCRIPTION */
 .desc{
-padding:15px;
-font-size:15px;
-color:#333;
 max-width:500px;
 margin:auto;
+padding:15px;
+color:#333;
 line-height:1.5;
 }
 
+/* BUTTON */
 .btn{
 background:red;
 color:white;
 padding:15px 25px;
 border:none;
 font-size:18px;
-cursor:pointer;
-margin-top:15px;
 border-radius:5px;
+cursor:pointer;
 position:relative;
 overflow:hidden;
 }
@@ -67,27 +71,21 @@ left:-100%;
 width:100%;
 height:100%;
 background:yellow;
-transition:2s;
 opacity:0.5;
+transition:2s;
 }
 
 .btn:hover::after{
 left:0;
 }
 
-/* payment page */
-#paymentPage{
+/* PAYMENT */
+#payment{
 display:none;
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:#eee;
 padding-top:80px;
 }
 
-.payBox{
+.box{
 background:white;
 padding:30px;
 margin:auto;
@@ -97,42 +95,50 @@ border-radius:10px;
 box-shadow:0 0 10px rgba(0,0,0,0.2);
 }
 
-/* call popup */
-#callPopup{
+/* CALL MODAL */
+#call{
 display:none;
 position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
+top:0;left:0;
+width:100%;height:100%;
 background:rgba(0,0,0,0.85);
 align-items:center;
 justify-content:center;
 }
 
-#callBox{
+.callBox{
 background:#111;
-padding:20px;
+padding:15px;
 border-radius:10px;
 width:300px;
 color:white;
 }
 
-video{width:100%;border-radius:10px;}
+video{
+width:100%;
+border-radius:10px;
+}
 
-.small{font-size:12px;color:yellow;}
+small{color:yellow;}
+textarea{
+width:90%;
+height:60px;
+margin-top:10px;
+}
 </style>
 </head>
 
 <body>
 
 <!-- MAIN PAGE -->
-<div id="mainPage">
+<div id="main">
 
-<img class="profile-img" src="https://files.catbox.moe/hnc2d4.jpeg">
+<div class="profile">
+<img src="https://files.catbox.moe/hnc2d4.jpeg">
 <h1>সুরভী খাতুন</h1>
+</div>
 
-<div class="img-row">
+<div class="row">
 <img src="https://files.catbox.moe/lj7phy.jpeg">
 <img src="https://files.catbox.moe/47p5f3.jpeg">
 </div>
@@ -143,57 +149,93 @@ video{width:100%;border-radius:10px;}
 আমার সার্ভিস প্রিমিয়াম এবং ভিআইপি।
 </div>
 
-<button class="btn" onclick="openPayment()">সার্ভিস কিনুন</button>
+<button class="btn" onclick="openPay()">সার্ভিস কিনুন</button>
+
+<br><br>
+
+<!-- MESSAGE BOX -->
+<div>
+<textarea id="msg" placeholder="আপনার মেসেজ লিখুন..."></textarea>
+<br>
+<button class="btn" onclick="sendMsg()">মেসেজ পাঠান</button>
+</div>
 
 </div>
 
 <!-- PAYMENT PAGE -->
-<div id="paymentPage">
-<div class="payBox">
+<div id="payment">
+<div class="box">
 <h2>💳 Payment Page</h2>
-<p>এখানে পরে bKash / Nagad যোগ করা হবে</p>
+<p>এখানে পরে bKash / Nagad যুক্ত করা হবে</p>
 <br>
-<button onclick="backHome()">⬅ Back</button>
+<button onclick="back()">⬅ Back</button>
 </div>
 </div>
 
-<!-- DEMO CALL -->
-<div id="callPopup">
-<div id="callBox">
-<div class="small">DEMO CALL (15 sec auto)</div>
-<video id="callVideo" controls></video>
-<br>
+<!-- CALL POPUP -->
+<div id="call">
+<div class="callBox">
+<small>📞 DEMO VIDEO CALL</small>
+<video id="vcall" controls></video>
+<br><br>
 <button onclick="closeCall()">Close</button>
 </div>
 </div>
 
 <script>
 
-function openPayment(){
-let btn=document.querySelector(".btn");
-btn.style.background="yellow";
-btn.style.color="black";
+function openPay(){
+let b=document.querySelector(".btn");
+b.style.background="yellow";
+b.style.color="black";
 
 setTimeout(()=>{
-document.getElementById("mainPage").style.display="none";
-document.getElementById("paymentPage").style.display="block";
+document.getElementById("main").style.display="none";
+document.getElementById("payment").style.display="block";
 },2000);
 }
 
-function backHome(){
-document.getElementById("paymentPage").style.display="none";
-document.getElementById("mainPage").style.display="block";
+function back(){
+document.getElementById("payment").style.display="none";
+document.getElementById("main").style.display="block";
 }
 
-// auto call
+/* AUTO CALL AFTER 15 SEC */
 setTimeout(()=>{
-document.getElementById("callPopup").style.display="flex";
-document.getElementById("callVideo").src="https://files.catbox.moe/4czbh7.mp4";
-document.getElementById("callVideo").play();
+document.getElementById("call").style.display="flex";
+document.getElementById("vcall").src="https://files.catbox.moe/4czbh7.mp4";
+document.getElementById("vcall").play();
 },15000);
 
 function closeCall(){
-document.getElementById("callPopup").style.display="none";
+document.getElementById("call").style.display="none";
+
+/* AUDIO AFTER CALL END */
+let a1=new Audio("https://files.catbox.moe/8u5x9r.mp3");
+let a2=new Audio("https://files.catbox.moe/8u5x9r.mp3");
+
+a1.play();
+
+setTimeout(()=>{
+a2.play();
+},4000);
+}
+
+/* MESSAGE SYSTEM (demo) */
+function sendMsg(){
+let msg=document.getElementById("msg").value;
+
+if(msg.trim()==""){
+alert("মেসেজ লিখুন");
+return;
+}
+
+alert("মেসেজ পাঠানো হয়েছে");
+
+setTimeout(()=>{
+let audio=new Audio("https://files.catbox.moe/8u5x9r.mp3");
+audio.play();
+},5000);
 }
 
 </script>

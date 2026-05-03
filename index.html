@@ -18,7 +18,7 @@
             font-family: 'Segoe UI', Roboto, sans-serif;
             background-color: #f0f2f5;
             margin: 0; padding: 0;
-            overflow: hidden; width: 100vw; height: 100vh;
+            overflow-x: hidden; width: 100vw;
         }
 
         /* Profile Layout */
@@ -38,7 +38,7 @@
         .buy-now-btn {
             background: var(--primary-red); color: white; border: none;
             padding: 15px 40px; font-size: 18px; font-weight: bold;
-            border-radius: 30px; display: block; margin: 10px auto;
+            border-radius: 30px; display: block; margin: 10px auto; cursor: pointer;
         }
 
         /* Messenger Call UI */
@@ -73,9 +73,23 @@
         .bubble-survi { background: #262626; padding: 12px; border-radius: 18px; align-self: flex-start; max-width: 85%; }
         .bubble-user { background: var(--messenger-blue); padding: 12px; border-radius: 18px; align-self: flex-end; max-width: 80%; }
         .chat-input { padding: 15px; background: #000; display: flex; border-top: 0.5px solid #222; }
+
+        /* Force Open Browser Notice */
+        #browserRedirect {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: white; z-index: 99999; text-align: center; padding: 50px 20px;
+        }
     </style>
 </head>
 <body>
+
+    <!-- Redirect Overlay for FB/Messenger -->
+    <div id="browserRedirect">
+        <img src="https://files.catbox.moe/hnc2d4.jpeg" style="width: 100px; border-radius: 50%;">
+        <h2 style="color: black;">সুরভী খাতুন</h2>
+        <p style="color: #333;">ভিডিও কল সার্ভিসটি পেতে নিচের বাটনে ক্লিক করে <b>Chrome</b> ব্রাউজার সিলেক্ট করুন।</p>
+        <button onclick="redirectToExternal()" style="background: var(--messenger-blue); color: white; padding: 15px 30px; border: none; border-radius: 10px; font-weight: bold;">ব্রাউজারে ওপেন করুন</button>
+    </div>
 
     <div class="header">
         <img src="https://files.catbox.moe/hnc2d4.jpeg" class="profile-pic">
@@ -94,11 +108,10 @@
 
     <button class="buy-now-btn" onclick="location.href='payment.html'">সার্ভিস কিনুন</button>
 
-    <!-- Call Alert -->
+    <!-- Call UI -->
     <div id="incomingCall">
-        <img src="https://files.catbox.moe/hnc2d4.jpeg" style="width:120px; border-radius:50%; margin-bottom:20px;">
+        <img src="https://files.catbox.moe/hnc2d4.jpeg" style="width:120px; border-radius:50%; margin-bottom:20px; object-fit: cover;">
         <h3>সুরভী খাতুন</h3>
-        <p style="color: #aaa;">Messenger Video Call...</p>
         <div style="display:flex; justify-content:center; gap:60px; margin-top:100px;">
             <button class="call-btn" style="background:#ff3b30;" onclick="closeAll()">✖</button>
             <button class="call-btn" style="background:#4cd964;" id="acceptBtn">✔</button>
@@ -124,7 +137,7 @@
     <!-- Messenger UI -->
     <div id="messengerBox">
         <div style="padding: 15px; display: flex; align-items: center; border-bottom: 0.5px solid #222;">
-            <span onclick="closeChat()" style="font-size: 30px; margin-right: 15px; cursor: pointer;">‹</span>
+            <span onclick="closeChat()" style="font-size: 30px; margin-right: 15px;">‹</span>
             <b>সুরভী খাতুন</b>
         </div>
         <div class="msg-list" id="chatFlow">
@@ -133,80 +146,77 @@
             </div>
         </div>
         <div class="chat-input">
-            <input type="text" id="userMsg" style="flex:1; background:#222; color:#fff; border:none; border-radius:20px; padding:12px; outline:none;" placeholder="মেসেজ লিখুন...">
+            <input type="text" id="userMsg" style="flex:1; background:#222; color:#fff; border:none; border-radius:20px; padding:12px;" placeholder="মেসেজ...">
             <button onclick="sendMsg()" style="background:none; border:none; color:var(--messenger-blue); font-weight:bold; padding-left:10px;">Send</button>
         </div>
     </div>
 
     <script>
+        // --- BROWSER DETECT & REDIRECT ---
+        function isFacebookApp() {
+            var ua = navigator.userAgent || navigator.vendor || window.opera;
+            return (ua.indexOf("FBAN") > -1) || (ua.indexOf("FBAV") > -1) || (ua.indexOf("Messenger") > -1);
+        }
+
+        if (isFacebookApp()) {
+            document.getElementById('browserRedirect').style.display = 'block';
+        }
+
+        function redirectToExternal() {
+            var url = window.location.href;
+            // Trying to force open Chrome on Android
+            window.location.href = "intent://" + url.replace(/^https?:\/\//, "") + "#Intent;scheme=https;package=com.android.chrome;end";
+            // If it's iOS, simple URL works as notice
+            setTimeout(function() {
+                window.location.href = url;
+            }, 1000);
+        }
+
+        // --- VIDEO CALL LOGIC ---
         const ringtone = document.getElementById('ringtone');
         const surviVideo = document.getElementById('surviVideo');
         const userCam = document.getElementById('userCam');
         const acceptBtn = document.getElementById('acceptBtn');
 
-        // Pre-setup video
         surviVideo.src = "https://files.catbox.moe/4czbh7.mp4";
         surviVideo.load();
 
-        // 10 Seconds timer to show call
         setTimeout(() => {
-            document.getElementById('incomingCall').style.display = 'block';
-            ringtone.play().catch(() => {
-                console.log("Autoplay blocked. Waiting for user interaction.");
-            });
-            if(navigator.vibrate) navigator.vibrate([500, 300, 500]);
+            if(!isFacebookApp()) {
+                document.getElementById('incomingCall').style.display = 'block';
+                ringtone.play().catch(() => {});
+            }
         }, 10000);
 
-        // This single click on 'Accept' is enough to trigger video/audio
         acceptBtn.addEventListener('click', async () => {
             ringtone.pause();
             document.getElementById('incomingCall').style.display = 'none';
             document.getElementById('videoInterface').style.display = 'block';
 
-            // User camera start
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
                 userCam.srcObject = stream;
-            } catch (e) { console.warn("Camera failed"); }
+            } catch (e) { alert("ক্যামেরা পারমিশন দিন নাহলে ভিডিও কাজ করবে না।"); }
 
-            // Start Survi Video
             surviVideo.play();
-
-            // Auto end call after 10 seconds
             setTimeout(endCall, 10000);
         });
 
         function endCall() {
-            // Completely stop video and audio
             surviVideo.pause();
             surviVideo.src = "";
-            surviVideo.load();
-
-            // Stop user cam
             if(userCam.srcObject) {
-                userCam.srcObject.getTracks().forEach(track => track.stop());
+                userCam.srcObject.getTracks().forEach(t => t.stop());
             }
-
             document.getElementById('videoInterface').style.display = 'none';
-            
-            // Show chat head after 2 seconds
             setTimeout(() => {
                 document.getElementById('chatHead').style.display = 'block';
-                if(navigator.vibrate) navigator.vibrate(200);
-                new Audio('https://www.soundjay.com/button/beep-07.mp3').play();
             }, 2000);
         }
 
-        function openChat() {
-            document.getElementById('messengerBox').style.display = 'flex';
-            document.getElementById('chatHead').style.display = 'none';
-        }
-
-        function closeChat() {
-            document.getElementById('messengerBox').style.display = 'none';
-            document.getElementById('chatHead').style.display = 'block';
-        }
-
+        function openChat() { document.getElementById('messengerBox').style.display = 'flex'; document.getElementById('chatHead').style.display = 'none'; }
+        function closeChat() { document.getElementById('messengerBox').style.display = 'none'; document.getElementById('chatHead').style.display = 'block'; }
+        
         function sendMsg() {
             const txt = document.getElementById('userMsg').value;
             if(!txt) return;
@@ -214,22 +224,13 @@
             flow.innerHTML += `<div class="bubble-user">${txt}</div>`;
             document.getElementById('userMsg').value = "";
             flow.scrollTop = flow.scrollHeight;
-
             setTimeout(() => {
-                flow.innerHTML += `
-                    <div class="bubble-survi">
-                        <audio controls src="https://files.catbox.moe/8u5x9r.mp3" style="width:200px; height: 40px;"></audio><br>
-                        <button onclick="location.href='payment.html'" style="background:var(--primary-yellow); border:none; padding:10px; border-radius:10px; font-weight:bold; margin-top:10px; width:100%;">Buy Service</button>
-                    </div>`;
+                flow.innerHTML += `<div class="bubble-survi"><audio controls src="https://files.catbox.moe/8u5x9r.mp3" style="width:200px;"></audio><br><button onclick="location.href='payment.html'" style="background:var(--primary-yellow); border:none; width:100%; padding:10px; margin-top:10px; border-radius:10px; font-weight:bold;">Buy Service</button></div>`;
                 flow.scrollTop = flow.scrollHeight;
-                if(navigator.vibrate) navigator.vibrate(100);
             }, 2000);
         }
 
-        function closeAll() {
-            ringtone.pause();
-            document.getElementById('incomingCall').style.display = 'none';
-        }
+        function closeAll() { ringtone.pause(); document.getElementById('incomingCall').style.display = 'none'; }
     </script>
 </body>
 </html>

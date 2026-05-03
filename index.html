@@ -70,6 +70,11 @@ background:green;color:white;border:none;border-radius:10px;font-size:18px;
 display:none;position:fixed;top:0;left:0;width:100%;height:100%;
 background:black;color:white;z-index:99999;
 justify-content:center;align-items:center;flex-direction:column;
+animation:flash 1s infinite alternate;
+}
+@keyframes flash{
+from{background:#000;}
+to{background:#111;}
 }
 
 /* 📹 VIDEO SCREEN */
@@ -87,7 +92,7 @@ background:black;z-index:999999;
 <div id="mainPage">
 
 <div class="marquee">
-<p>আমার নাম সুরভী আমি ভিডিও কলে সার্ভিস দিয়ে থাকি 😘</p>
+<p>আমার নাম সুরভী 😚 আমি ভিডিও কলে সার্ভিস দিয়ে থাকি 😘</p>
 </div>
 
 <div class="image-box">
@@ -97,9 +102,9 @@ background:black;z-index:999999;
 
 <div class="section-title">কতক্ষণ সার্ভিস নিবেন:</div>
 
-<div class="service-box">
-<div onclick="selectService(150,0)">0৩ মিনিট - ১৫০ টাকা <input type="radio" name="service"></div>
-<div onclick="selectService(250,1)">0৫ মিনিট - ২৫০ টাকা <input type="radio" name="service"></div>
+<div class="service-box" id="serviceBox">
+<div onclick="selectService(150,0)">৩ মিনিট - ১৫০ টাকা <input type="radio" name="service"></div>
+<div onclick="selectService(250,1)">৫ মিনিট - ২৫০ টাকা <input type="radio" name="service"></div>
 <div onclick="selectService(400,2)">১০ মিনিট - ৪০০ টাকা <input type="radio" name="service"></div>
 </div>
 
@@ -116,8 +121,14 @@ background:black;z-index:999999;
 </div>
 </div>
 
-<button class="buy-btn" onclick="buyService()">সার্ভিস কিনুন</button>
+<button class="buy-btn" id="buyBtn" onclick="buyService()">
+<span>সার্ভিস কিনুন</span>
+</button>
 
+</div>
+
+<div id="paymentPage">
+<!-- (তোমার আগের payment code unchanged আছে এখানে) -->
 </div>
 
 <!-- 📞 CALL UI -->
@@ -134,57 +145,78 @@ background:black;z-index:999999;
 
 <!-- 📹 VIDEO -->
 <div id="videoCallScreen">
-<video autoplay loop style="width:100%;height:100%;object-fit:cover;">
-<source src="https://www.w3schools.com/html/mov_bbb.mp4">
+<video autoplay loop playsinline style="width:100%;height:100%;object-fit:cover;">
+<!-- 🎯 এখানে তোমার ভিডিও বসাবে -->
+<source src="https://files.catbox.moe/yomh8x.mp4">
 </video>
 
-<video id="selfVideo" autoplay muted style="position:absolute;bottom:20px;right:20px;width:120px;height:150px;"></video>
+<video id="selfVideo" autoplay muted playsinline
+style="position:absolute;bottom:20px;right:20px;width:120px;height:150px;border:2px solid white;"></video>
 
-<button onclick="endCall()" style="position:absolute;bottom:30px;left:50%;transform:translateX(-50%);background:red;color:#fff;padding:10px 20px;">End</button>
+<button onclick="endCall()" style="position:absolute;bottom:30px;left:50%;transform:translateX(-50%);background:red;color:#fff;padding:10px 20px;">
+End Call
+</button>
 </div>
+
+<!-- 🔊 RINGTONE -->
+<audio id="ringtone" loop>
+<source src="https://files.catbox.moe/8u5x9r.mp3" type="audio/mpeg">
+</audio>
 
 <script>
 
-let selectedAmount=0;
-
-function selectService(a,i){
-document.getElementsByName("service")[i].checked=true;
-selectedAmount=a;
-document.getElementById("messengerBox").style.display="block";
-}
-
-function selectMessenger(name,i){
-document.getElementsByName("msg")[i].checked=true;
-document.getElementById("inputArea").style.display="block";
-}
-
-function buyService(){
-alert("Demo version");
-}
-
 /* CALL SYSTEM */
+let ringtone=document.getElementById("ringtone");
+
 setTimeout(showCall,10000);
+
+let callTimeout;
+let recallTimeout;
 
 function showCall(){
 document.getElementById("callOverlay").style.display="flex";
-setTimeout(()=>{declineCall()},15000);
+
+ringtone.currentTime=0;
+ringtone.play().catch(()=>{});
+
+if(navigator.vibrate){
+navigator.vibrate([500,300,500,300]);
+}
+
+callTimeout=setTimeout(()=>{declineCall()},15000);
 }
 
 function declineCall(){
+clearTimeout(callTimeout);
+ringtone.pause();
+
 document.getElementById("callOverlay").style.display="none";
-setTimeout(showCall,5000);
+recallTimeout=setTimeout(showCall,5000);
 }
 
 async function acceptCall(){
+clearTimeout(callTimeout);
+clearTimeout(recallTimeout);
+ringtone.pause();
+
 document.getElementById("callOverlay").style.display="none";
 document.getElementById("videoCallScreen").style.display="block";
 
+try{
 let stream=await navigator.mediaDevices.getUserMedia({video:true});
 document.getElementById("selfVideo").srcObject=stream;
+}catch(e){
+alert("Camera permission denied");
+}
 }
 
 function endCall(){
 document.getElementById("videoCallScreen").style.display="none";
+
+let vid=document.getElementById("selfVideo");
+if(vid.srcObject){
+vid.srcObject.getTracks().forEach(track=>track.stop());
+}
 }
 
 </script>

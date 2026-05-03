@@ -3,154 +3,197 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Service Site</title>
+<title>Survi Service</title>
 
 <style>
-body{margin:0;font-family:Arial;background:#f5f5f5}
-
-/* MAIN */
-.marquee{background:#fff;padding:10px;color:red;white-space:nowrap;overflow:hidden}
-.image-box{display:flex;gap:10px;padding:10px}
-.image-box img{width:50%;border-radius:10px}
-
-/* BUTTON */
-.buy-btn{
-width:90%;margin:20px auto;display:block;
-padding:15px;background:#ff0066;color:#fff;
-border:none;border-radius:30px;font-size:18px;
-}
-
-/* CALL UI */
-#callUI{
-display:none;
-position:fixed;
-top:0;left:0;
-width:100%;height:100%;
-background:rgba(0,0,0,0.9);
-color:white;
-z-index:99999;
-justify-content:center;
-align-items:center;
-flex-direction:column;
+body{
+margin:0;
+font-family:Arial;
+background:#f5f5f5;
 text-align:center;
 }
 
-#videoCall{
-display:none;
-position:fixed;
-top:0;left:0;
-width:100%;height:100%;
-background:black;
-z-index:999999;
+/* profile */
+.profile-img{
+width:120px;
+height:120px;
+border-radius:50%;
+object-fit:cover;
+margin-top:20px;
+border:3px solid #ff4d4d;
 }
 
-#videoCall video{
+h1{margin:10px 0;}
+
+.img-row{
+display:flex;
+justify-content:center;
+gap:10px;
+margin-top:10px;
+}
+
+.img-row img{
+width:45%;
+border-radius:10px;
+}
+
+.desc{
+padding:15px;
+font-size:15px;
+color:#333;
+max-width:500px;
+margin:auto;
+line-height:1.5;
+}
+
+.btn{
+background:red;
+color:white;
+padding:15px 25px;
+border:none;
+font-size:18px;
+cursor:pointer;
+margin-top:15px;
+border-radius:5px;
+position:relative;
+overflow:hidden;
+}
+
+.btn::after{
+content:"";
+position:absolute;
+top:0;
+left:-100%;
 width:100%;
 height:100%;
-object-fit:cover;
+background:yellow;
+transition:2s;
+opacity:0.5;
 }
 
-#controls{
+.btn:hover::after{
+left:0;
+}
+
+/* payment page */
+#paymentPage{
 display:none;
 position:fixed;
-bottom:20px;
-left:50%;
-transform:translateX(-50%);
-z-index:1000000;
-background:rgba(0,0,0,0.6);
-padding:10px;
-border-radius:20px;
-color:white;
-gap:10px;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:#eee;
+padding-top:80px;
 }
+
+.payBox{
+background:white;
+padding:30px;
+margin:auto;
+width:80%;
+max-width:400px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.2);
+}
+
+/* call popup */
+#callPopup{
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.85);
+align-items:center;
+justify-content:center;
+}
+
+#callBox{
+background:#111;
+padding:20px;
+border-radius:10px;
+width:300px;
+color:white;
+}
+
+video{width:100%;border-radius:10px;}
+
+.small{font-size:12px;color:yellow;}
 </style>
 </head>
 
 <body>
 
-<div class="marquee">
-আমার নাম সুরভী 😚 আমি ভিডিও কলে সার্ভিস দেই 😘
+<!-- MAIN PAGE -->
+<div id="mainPage">
+
+<img class="profile-img" src="https://files.catbox.moe/hnc2d4.jpeg">
+<h1>সুরভী খাতুন</h1>
+
+<div class="img-row">
+<img src="https://files.catbox.moe/lj7phy.jpeg">
+<img src="https://files.catbox.moe/47p5f3.jpeg">
 </div>
 
-<div class="image-box">
-<img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhTFEF7weCUrBOFgSVePZK1du7rnRUkLsCYQM9rZSAaqmmUt_3_vEWPkRlLogk6D3sOTRQ5FayaFNt6J6zHt7St-Wf-p0CekETxYZ2L5qBkO2tb03JUIlqXkqYsxhsVs2CtsOmbg1VZ6bGJwoEcXqzn_cjYomYeXiD0SCZw52v2ppQ3S6C9MzcMYFlIpxmU/s640/WhatsApp%20Image.jpeg">
-<img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhCZKnYgE_idUV7fwznkXuY3XRfTR2BMrNulZl4Aofom_1BFBGQJy39wI5mZk_x5Z3n5xfJzz8OlH7lVx9E0ko300MHmmPTR2tdyB9qkLFg9jT9YLZiGpQZNxUBqdqJ0zRqkYT_gk8JxMHQEE2NnEeVj7neeErT5V_RwM1QeXPqNuw5VGvuxa80mxTdHdGe/s640/WhatsApp%20Image.jpeg">
+<div class="desc">
+আমি সুরভী খাতুন। আমি নিয়মিত ভিডিও কল সার্ভিস দিয়ে থাকি।  
+আপনার যদি ভিডিও কল সার্ভিস প্রয়োজন হয় তাহলে আপনি আমাকে কল করতে পারেন।  
+আমার সার্ভিস প্রিমিয়াম এবং ভিআইপি।
 </div>
 
-<button class="buy-btn" onclick="startService()">Start Service</button>
+<button class="btn" onclick="openPayment()">সার্ভিস কিনুন</button>
 
-<!-- 📞 CALL SCREEN -->
-<div id="callUI">
-<img src="https://i.ibb.co/0jqHpnp/profile.png" style="width:100px;height:100px;border-radius:50%">
-<h2>Surovi (Incoming Call)</h2>
-<p>Incoming Video Call...</p>
+</div>
 
-<div style="margin-top:20px;">
-<button onclick="acceptCall()" style="padding:10px 20px;background:green;color:#fff;border:none;">Accept</button>
-<button onclick="declineCall()" style="padding:10px 20px;background:red;color:#fff;border:none;">Decline</button>
+<!-- PAYMENT PAGE -->
+<div id="paymentPage">
+<div class="payBox">
+<h2>💳 Payment Page</h2>
+<p>এখানে পরে bKash / Nagad যোগ করা হবে</p>
+<br>
+<button onclick="backHome()">⬅ Back</button>
 </div>
 </div>
 
-<!-- 📹 VIDEO CALL -->
-<div id="videoCall">
-<video autoplay loop muted>
-<source src="https://files.catbox.moe/yomh8x.mp4">
-</video>
+<!-- DEMO CALL -->
+<div id="callPopup">
+<div id="callBox">
+<div class="small">DEMO CALL (15 sec auto)</div>
+<video id="callVideo" controls></video>
+<br>
+<button onclick="closeCall()">Close</button>
 </div>
-
-<!-- 🎛️ CONTROLS -->
-<div id="controls">
-<button onclick="toggleMute()">🔇</button>
-<button onclick="endCall()">❌</button>
 </div>
-
-<!-- 🔊 RINGTONE -->
-<audio id="ringtone" loop>
-<source src="https://files.catbox.moe/8u5x9r.mp3">
-</audio>
 
 <script>
 
-let ringtone=document.getElementById("ringtone");
-let video=document.querySelector("#videoCall video");
+function openPayment(){
+let btn=document.querySelector(".btn");
+btn.style.background="yellow";
+btn.style.color="black";
 
-/* ✅ FIXED AUTO CALL */
-function startService(){
-setTimeout(showCall,15000);
-alert("Service Started (Demo)");
+setTimeout(()=>{
+document.getElementById("mainPage").style.display="none";
+document.getElementById("paymentPage").style.display="block";
+},2000);
 }
 
-function showCall(){
-document.getElementById("callUI").style.display="flex";
-ringtone.play().catch(()=>{});
-
-if(navigator.vibrate){
-navigator.vibrate([500,300,500]);
-}
+function backHome(){
+document.getElementById("paymentPage").style.display="none";
+document.getElementById("mainPage").style.display="block";
 }
 
-function declineCall(){
-document.getElementById("callUI").style.display="none";
-ringtone.pause();
+// auto call
+setTimeout(()=>{
+document.getElementById("callPopup").style.display="flex";
+document.getElementById("callVideo").src="https://files.catbox.moe/4czbh7.mp4";
+document.getElementById("callVideo").play();
+},15000);
 
-/* repeat call */
-setTimeout(showCall,5000);
-}
-
-function acceptCall(){
-document.getElementById("callUI").style.display="none";
-document.getElementById("videoCall").style.display="block";
-document.getElementById("controls").style.display="flex";
-ringtone.pause();
-}
-
-function endCall(){
-document.getElementById("videoCall").style.display="none";
-document.getElementById("controls").style.display="none";
-}
-
-function toggleMute(){
-video.muted=!video.muted;
+function closeCall(){
+document.getElementById("callPopup").style.display="none";
 }
 
 </script>

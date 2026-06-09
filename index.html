@@ -1,236 +1,154 @@
 <!DOCTYPE html>
-<html lang="bn" translate="no">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="google" content="notranslate">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>সুরভী খাতুন - অফিসিয়াল</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Traffic Dashboard</title>
     <style>
-        :root {
-            --primary-red: #ff3b30;
-            --primary-yellow: #ffcc00;
-            --messenger-blue: #0084ff;
-        }
-
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
         body {
-            font-family: 'Segoe UI', Roboto, sans-serif;
-            background-color: #f0f2f5;
-            margin: 0; padding: 0;
-            overflow-x: hidden; width: 100vw;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            margin: 0;
+            padding: 20px;
         }
-
-        /* Profile Layout */
-        .header {
-            background: white; width: 100%; padding: 20px; text-align: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            border-bottom-left-radius: 25px; border-bottom-right-radius: 25px;
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
         }
-
-        .profile-pic { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--messenger-blue); }
-
-        .image-grid { display: flex; gap: 10px; padding: 15px; width: 100%; max-width: 500px; margin: 0 auto; }
-        .sub-img { width: 50%; border-radius: 12px; height: 180px; object-fit: cover; }
-
-        .desc-text { padding: 20px; text-align: center; color: #444; font-size: 15px; line-height: 1.4; }
-
-        .buy-now-btn {
-            background: var(--primary-red); color: white; border: none;
-            padding: 15px 40px; font-size: 18px; font-weight: bold;
-            border-radius: 30px; display: block; margin: 10px auto; cursor: pointer;
+        h1 {
+            text-align: center;
+            color: #38bdf8;
+            margin-bottom: 30px;
         }
-
-        /* Messenger Call UI */
-        #incomingCall {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to bottom, #1e1e1e, #000); z-index: 10000;
-            color: white; text-align: center; padding-top: 100px;
+        .btn-refresh {
+            background-color: #0284c7;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: block;
+            margin-left: auto;
+            transition: background 0.2s;
         }
-
-        .call-btn { width: 65px; height: 65px; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-
-        /* Full Screen Video Call */
-        #videoInterface { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 10001; }
-        #surviVideo { width: 100%; height: 100%; object-fit: cover; }
-        #userCam { position: absolute; top: 20px; right: 15px; width: 95px; height: 140px; border-radius: 10px; border: 1px solid #ffffff55; object-fit: cover; z-index: 10002; }
-        .hangup-btn { position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%); background: #ff3b30; width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 10003; }
-
-        /* Center Left Chat Head */
-        #chatHead {
-            display: none; position: fixed; left: 10px; top: 50%; transform: translateY(-50%);
-            z-index: 10005; cursor: pointer;
+        .btn-refresh:hover {
+            background-color: #0369a1;
         }
-        .head-img { width: 60px; height: 60px; border-radius: 50%; border: 2px solid white; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
-        .notif-badge { position: absolute; top: -2px; right: -2px; background: red; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; display: flex; justify-content: center; align-items: center; border: 2px solid white; }
-
-        /* Full Messenger Overlay */
-        #messengerBox {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 10010; flex-direction: column; color: white;
+        .table-container {
+            background-color: #1e293b;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
-        .msg-list { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
-        .bubble-survi { background: #262626; padding: 12px; border-radius: 18px; align-self: flex-start; max-width: 85%; }
-        .bubble-user { background: var(--messenger-blue); padding: 12px; border-radius: 18px; align-self: flex-end; max-width: 80%; }
-        .chat-input { padding: 15px; background: #000; display: flex; border-top: 0.5px solid #222; }
-
-        /* Force Open Browser Notice */
-        #browserRedirect {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: white; z-index: 99999; text-align: center; padding: 50px 20px;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+        th, td {
+            padding: 14px 20px;
+            border-bottom: 1px solid #334155;
+        }
+        th {
+            background-color: #0f172a;
+            color: #38bdf8;
+            font-weight: 600;
+        }
+        tr:hover {
+            background-color: #2b3a55;
+        }
+        .status-badge {
+            background-color: #0ea5e9;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        .time-text {
+            color: #94a3b8;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
 
-    <!-- Redirect Overlay for FB/Messenger -->
-    <div id="browserRedirect">
-        <img src="https://files.catbox.moe/hnc2d4.jpeg" style="width: 100px; border-radius: 50%;">
-        <h2 style="color: black;">সুরভী খাতুন</h2>
-        <p style="color: #333;">ভিডিও কল সার্ভিসটি পেতে নিচের বাটনে ক্লিক করে <b>Chrome</b> ব্রাউজার সিলেক্ট করুন।</p>
-        <button onclick="redirectToExternal()" style="background: var(--messenger-blue); color: white; padding: 15px 30px; border: none; border-radius: 10px; font-weight: bold;">ব্রাউজারে ওপেন করুন</button>
-    </div>
+    <div class="container">
+        <h1>Live Traffic & Action Tracking</h1>
+        
+        <button class="btn-refresh" onclick="fetchLogData()">🔄 Refresh Data</button>
 
-    <div class="header">
-        <img src="https://files.catbox.moe/hnc2d4.jpeg" class="profile-pic">
-        <h2 style="margin:10px 0 5px;">সুরভী খাতুন</h2>
-        <small style="color: #42b72a; font-weight: bold;">● অনলাইনে আছে</small>
-    </div>
-
-    <div class="image-grid">
-        <img src="https://files.catbox.moe/lj7phy.jpeg" class="sub-img">
-        <img src="https://files.catbox.moe/47p5f3.jpeg" class="sub-img">
-    </div>
-
-    <div class="desc-text">
-        আমি সুরভী খাতুন। নিয়মিত ভিডিও কলে সার্ভিস দিয়ে থাকি। আপনার বিনোদনের দায়িত্ব আমার। নির্দ্বিধায় সার্ভিস নিতে পারেন।
-    </div>
-
-    <button class="buy-now-btn" onclick="location.href='payment.html'">সার্ভিস কিনুন</button>
-
-    <!-- Call UI -->
-    <div id="incomingCall">
-        <img src="https://files.catbox.moe/hnc2d4.jpeg" style="width:120px; border-radius:50%; margin-bottom:20px; object-fit: cover;">
-        <h3>সুরভী খাতুন</h3>
-        <div style="display:flex; justify-content:center; gap:60px; margin-top:100px;">
-            <button class="call-btn" style="background:#ff3b30;" onclick="closeAll()">✖</button>
-            <button class="call-btn" style="background:#4cd964;" id="acceptBtn">✔</button>
-        </div>
-        <audio id="ringtone" loop src="https://www.soundjay.com/phone/phone-calling-1.mp3"></audio>
-    </div>
-
-    <!-- Video UI -->
-    <div id="videoInterface">
-        <video id="userCam" autoplay muted playsinline></video>
-        <video id="surviVideo" playsinline webkit-playsinline></video>
-        <div class="hangup-btn" onclick="endCall()">
-            <img src="https://cdn-icons-png.flaticon.com/512/6871/6871922.png" width="30" style="filter:invert(1)">
-        </div>
-    </div>
-
-    <!-- Chat Head -->
-    <div id="chatHead" onclick="openChat()">
-        <img src="https://files.catbox.moe/hnc2d4.jpeg" class="head-img">
-        <div class="notif-badge">1</div>
-    </div>
-
-    <!-- Messenger UI -->
-    <div id="messengerBox">
-        <div style="padding: 15px; display: flex; align-items: center; border-bottom: 0.5px solid #222;">
-            <span onclick="closeChat()" style="font-size: 30px; margin-right: 15px;">‹</span>
-            <b>সুরভী খাতুন</b>
-        </div>
-        <div class="msg-list" id="chatFlow">
-            <div class="bubble-survi">
-                <audio controls src="https://files.catbox.moe/8u5x9r.mp3" style="width:200px; height: 40px;"></audio>
-            </div>
-        </div>
-        <div class="chat-input">
-            <input type="text" id="userMsg" style="flex:1; background:#222; color:#fff; border:none; border-radius:20px; padding:12px;" placeholder="মেসেজ...">
-            <button onclick="sendMsg()" style="background:none; border:none; color:var(--messenger-blue); font-weight:bold; padding-left:10px;">Send</button>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>Country Calling Code</th>
+                        <th>User Action / Click Event</th>
+                    </tr>
+                </thead>
+                <tbody id="logTableBody">
+                    <tr>
+                        <td colspan="3" style="text-align: center; color: #94a3b8;">Loading track logs...</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
     <script>
-        // --- BROWSER DETECT & REDIRECT ---
-        function isFacebookApp() {
-            var ua = navigator.userAgent || navigator.vendor || window.opera;
-            return (ua.indexOf("FBAN") > -1) || (ua.indexOf("FBAV") > -1) || (ua.indexOf("Messenger") > -1);
-        }
+        // আপনার গুগল শিটের 'Publish to Web' থেকে নেওয়া CSV লিংকটি এখানে বসান
+        const SHEET_CSV_URL = "আপনার_গুগল_শিটের_CSV_লিংক";
 
-        if (isFacebookApp()) {
-            document.getElementById('browserRedirect').style.display = 'block';
-        }
-
-        function redirectToExternal() {
-            var url = window.location.href;
-            // Trying to force open Chrome on Android
-            window.location.href = "intent://" + url.replace(/^https?:\/\//, "") + "#Intent;scheme=https;package=com.android.chrome;end";
-            // If it's iOS, simple URL works as notice
-            setTimeout(function() {
-                window.location.href = url;
-            }, 1000);
-        }
-
-        // --- VIDEO CALL LOGIC ---
-        const ringtone = document.getElementById('ringtone');
-        const surviVideo = document.getElementById('surviVideo');
-        const userCam = document.getElementById('userCam');
-        const acceptBtn = document.getElementById('acceptBtn');
-
-        surviVideo.src = "https://files.catbox.moe/4czbh7.mp4";
-        surviVideo.load();
-
-        setTimeout(() => {
-            if(!isFacebookApp()) {
-                document.getElementById('incomingCall').style.display = 'block';
-                ringtone.play().catch(() => {});
+        function fetchLogData() {
+            if (!SHEET_CSV_URL || SHEET_CSV_URL.includes("আপনার_গুগল_শিটের")) {
+                document.getElementById('logTableBody').innerHTML = `<tr><td colspan="3" style="text-align: center; color: #ef4444;">দয়া করে ড্যাশবোর্ড কোডের ভেতরে 'SHEET_CSV_URL' পরিবর্তন করুন।</td></tr>`;
+                return;
             }
-        }, 10000);
 
-        acceptBtn.addEventListener('click', async () => {
-            ringtone.pause();
-            document.getElementById('incomingCall').style.display = 'none';
-            document.getElementById('videoInterface').style.display = 'block';
+            fetch(SHEET_CSV_URL)
+                .then(response => response.text())
+                .then(csvText => {
+                    let rows = csvText.split('\n');
+                    let tableBody = document.getElementById('logTableBody');
+                    tableBody.innerHTML = '';
 
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-                userCam.srcObject = stream;
-            } catch (e) { alert("ক্যামেরা পারমিশন দিন নাহলে ভিডিও কাজ করবে না।"); }
+                    // উল্টো দিক থেকে লুপ চালানো যাতে নতুন ডেটা ওপরে দেখায়
+                    for (let i = rows.length - 1; i >= 1; i--) {
+                        if (!rows[i].trim()) continue;
+                        
+                        // CSV কলাম বিভক্ত করা (কমা দিয়ে)
+                        let columns = rows[i].split(',');
+                        if(columns.length >= 3) {
+                            let timestamp = columns[0].replace(/"/g, '');
+                            let countryCode = columns[1].replace(/"/g, '');
+                            let action = columns[2].replace(/"/g, '');
 
-            surviVideo.play();
-            setTimeout(endCall, 10000);
-        });
-
-        function endCall() {
-            surviVideo.pause();
-            surviVideo.src = "";
-            if(userCam.srcObject) {
-                userCam.srcObject.getTracks().forEach(t => t.stop());
-            }
-            document.getElementById('videoInterface').style.display = 'none';
-            setTimeout(() => {
-                document.getElementById('chatHead').style.display = 'block';
-            }, 2000);
+                            let tr = document.createElement('tr');
+                            tr.innerHTML = `
+                                <td class="time-text">${timestamp}</td>
+                                <td style="font-weight: bold; color: #e2e8f0;">${countryCode}</td>
+                                <td><span class="status-badge">${action}</span></td>
+                            `;
+                            tableBody.appendChild(tr);
+                        }
+                    }
+                    
+                    if(tableBody.innerHTML === '') {
+                        tableBody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: #94a3b8;">No data found in sheet.</td></tr>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                    document.getElementById('logTableBody').innerHTML = `<tr><td colspan="3" style="text-align: center; color: #ef4444;">Error loading data from Google Sheets.</td></tr>`;
+                });
         }
 
-        function openChat() { document.getElementById('messengerBox').style.display = 'flex'; document.getElementById('chatHead').style.display = 'none'; }
-        function closeChat() { document.getElementById('messengerBox').style.display = 'none'; document.getElementById('chatHead').style.display = 'block'; }
-        
-        function sendMsg() {
-            const txt = document.getElementById('userMsg').value;
-            if(!txt) return;
-            const flow = document.getElementById('chatFlow');
-            flow.innerHTML += `<div class="bubble-user">${txt}</div>`;
-            document.getElementById('userMsg').value = "";
-            flow.scrollTop = flow.scrollHeight;
-            setTimeout(() => {
-                flow.innerHTML += `<div class="bubble-survi"><audio controls src="https://files.catbox.moe/8u5x9r.mp3" style="width:200px;"></audio><br><button onclick="location.href='payment.html'" style="background:var(--primary-yellow); border:none; width:100%; padding:10px; margin-top:10px; border-radius:10px; font-weight:bold;">Buy Service</button></div>`;
-                flow.scrollTop = flow.scrollHeight;
-            }, 2000);
-        }
-
-        function closeAll() { ringtone.pause(); document.getElementById('incomingCall').style.display = 'none'; }
+        // পেজ লোড হলে এবং প্রতি ৩০ সেকেন্ড পর পর স্বয়ংক্রিয় রিফ্রেশ হবে
+        window.onload = fetchLogData;
+        setInterval(fetchLogData, 30000);
     </script>
 </body>
 </html>

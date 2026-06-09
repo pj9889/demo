@@ -99,14 +99,11 @@
     </div>
 
     <script>
-        // আপনার গুগল শিটের 'Publish to Web' থেকে নেওয়া CSV লিংকটি এখানে বসান
-        const SHEET_CSV_URL = "আপনার_গুগল_শিটের_CSV_লিংক";
+        // আপনার দেওয়া সঠিক গুগল শিটের CSV লিংকটি নিচে সরাসরি বসিয়ে দেওয়া হয়েছে
+        const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ2Rz5wClgtvhM3_6QqdnXJAd7apo5_HskuMDMFk6NBBZh_C6xDC6TMbMq4c9wmgADrWtfxfl__S1dJ/pub?output=csv";
 
         function fetchLogData() {
-            if (!SHEET_CSV_URL || SHEET_CSV_URL.includes("আপনার_গুগল_শিটের")) {
-                document.getElementById('logTableBody').innerHTML = `<tr><td colspan="3" style="text-align: center; color: #ef4444;">দয়া করে ড্যাশবোর্ড কোডের ভেতরে 'SHEET_CSV_URL' পরিবর্তন করুন।</td></tr>`;
-                return;
-            }
+            if (!SHEET_CSV_URL) return;
 
             fetch(SHEET_CSV_URL)
                 .then(response => response.text())
@@ -115,11 +112,10 @@
                     let tableBody = document.getElementById('logTableBody');
                     tableBody.innerHTML = '';
 
-                    // উল্টো দিক থেকে লুপ চালানো যাতে নতুন ডেটা ওপরে দেখায়
+                    // নতুন ডেটা সবার ওপরে দেখানোর জন্য উল্টো দিক থেকে লুপ চালানো হয়েছে
                     for (let i = rows.length - 1; i >= 1; i--) {
                         if (!rows[i].trim()) continue;
                         
-                        // CSV কলাম বিভক্ত করা (কমা দিয়ে)
                         let columns = rows[i].split(',');
                         if(columns.length >= 3) {
                             let timestamp = columns[0].replace(/"/g, '');
@@ -146,7 +142,7 @@
                 });
         }
 
-        // পেজ লোড হলে এবং প্রতি ৩০ সেকেন্ড পর পর স্বয়ংক্রিয় রিফ্রেশ হবে
+        // পেজ চালু হলে ডেটা লোড হবে এবং প্রতি ৩০ সেকেন্ড পর পর লাইভ আপডেট হবে
         window.onload = fetchLogData;
         setInterval(fetchLogData, 30000);
     </script>
